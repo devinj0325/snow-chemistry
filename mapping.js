@@ -1,5 +1,5 @@
 //Create map
-var myMap = L.map("map", {
+const myMap = L.map("map", {
   center: [38.5516759, -111.3655038],
   zoom: 11
 });
