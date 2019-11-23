@@ -6,9 +6,9 @@
   html,
   body {
     height: 100%;
-    padding: 0;
+    padding: 20px;
     margin: 0;
-    background:#d6e9e9;
+    background:#ecf2f2;
     color: black;
   }
   /* The wrapper contains all of the page's content besides the footer, which is pushed to the bottom of the page */
