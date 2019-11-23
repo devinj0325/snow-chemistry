@@ -18,3 +18,12 @@ CREATE DATABASE snow_chemistry;
 	 Snow_depth INT
 	)
 	;
+	
+	CREATE TABLE stations (
+	id SERIAL PRIMARY KEY,
+	StationName VARCHAR,
+	Latitude FLOAT,
+	Longitude FLOAT,
+	Elevation INT
+	)
+	;
