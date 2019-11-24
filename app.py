@@ -14,7 +14,7 @@ app = Flask(__name__)
 ################
 # Database Setup
 ################
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:Noodle07!@localhost:5432/snow_chemistry"
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/snow_chemistry"
 db = SQLAlchemy(app)
 
 # reflect an existing database into a new model
@@ -32,7 +32,7 @@ stations = Base.classes.stations
 @app.route("/")
 
 def index():
-  render_template("index.html")
+  render_template("templates/index.html")
 
 @app.route("/snow")
 def snow_chemistry():
