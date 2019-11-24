@@ -8,7 +8,7 @@
     height: 100%;
     padding: 20px;
     margin: 0;
-    background:#ecf2f2;
+    background:white;
     color: black;
   }
   /* The wrapper contains all of the page's content besides the footer, which is pushed to the bottom of the page */
@@ -22,5 +22,6 @@
   .navbar {
     padding: 5px;
     margin: 0;
-    background: #99d8d8;
+    background: #cfe0ee;
+    color: black;
   }

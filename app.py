@@ -5,6 +5,7 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 from flask import Flask, jsonify
+import pandas as pd
 
 #############
 # Flask Setup
@@ -22,9 +23,12 @@ Base = automap_base()
 # reflect the tables
 Base.prepare(db.engine, reflect=True)
 
+print(dir(Base.classes))
+
 # Save reference to the table
-snowData = Base.classes.snow_data
+test = Base.classes.test
 stations = Base.classes.stations
+snowData = Base.classes.snow_data
 
 ##############
 # Flask Routes
