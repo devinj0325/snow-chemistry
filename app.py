@@ -32,7 +32,7 @@ stations = Base.classes.stations
 @app.route("/")
 
 def index():
-  render_template("index.html")
+  render_template("templates/index.html")
 
 @app.route("/snow")
 def snow_chemistry():
