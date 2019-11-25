@@ -65,10 +65,12 @@ def sample_metadata(sample):
         snowData.WaterYear,
         snowData.Snow_depth,
     ]
-
     results = db.session.query(*sel).filter(snowData.sample == sample).all()
+    print(results)
 
+    def __repr__(self):
+      return "<It's working!!)>" % (
+      self.StationName, self.WaterYear, self.Snow_depth)
 
-
-if __name__ == "__main__":
-  app.run()
+# if __name__ == "__main__":
+#   app.run()
