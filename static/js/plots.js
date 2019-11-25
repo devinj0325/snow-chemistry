@@ -39,14 +39,14 @@ let renderChart = function(filteredData) {
 
   // Clear chartGroup on svg for rerender
   chartGroup.selectAll("*").remove();
-
+ 
   // Configure a scale
   // d3.extent returns an array containing the min and max values for the property specified
   var xLinearScale = d3.scaleLinear()
     .domain(d3.extent(filteredData, data => data.year))
     .range([0, chartWidth]);
 
-  // Configure a linear scale with a range 
+    // Configure a linear scale with a range 
   var yLinearScale = d3.scaleLinear()
     .domain([0, d3.max(filteredData, data => data.depth)])
     .range([chartHeight, 0]);
@@ -55,24 +55,25 @@ let renderChart = function(filteredData) {
   // These will be used to create the chart's axes
   var bottomAxis = d3.axisBottom(xLinearScale).tickFormat(d3.format("d"));
   var leftAxis = d3.axisLeft(yLinearScale);
-
+  
   // Configure a line function which will plot the x and y coordinates using our scales
   var drawLine = d3.line()
     .x(data => xLinearScale(data.year))
     .y(data => yLinearScale(data.depth));
-
-  // Append an SVG path and plot its points using the line function
+  
+    // Append an SVG path and plot its points using the line function
+  // The drawLine function returns the instructions for creating the line for forceData
+  
   chartGroup.append("path")
-    // The drawLine function returns the instructions for creating the line for forceData
     .attr("d", drawLine(filteredData))
     .classed("line", true);
-
-  // Append an SVG group element to the chartGroup, create the left axis inside of it
+  
+    // Append an SVG group element to the chartGroup, create the left axis inside of it
   chartGroup.append("g")
     .classed("axis", true)
     .call(leftAxis);
-
-  // Append an SVG group element to the chartGroup, create the bottom axis inside of it
+  
+    // Append an SVG group element to the chartGroup, create the bottom axis inside of it
   // Translate the bottom axis to the bottom of the page
   chartGroup.append("g")
     .classed("axis", true)
@@ -81,13 +82,13 @@ let renderChart = function(filteredData) {
 };
 
 // Use D3 to load data from csv
-d3.csv('data/cleanedData.csv').then(function(csvData) {
+d3.csv('../db/data/cleanedDataV3.csv').then(function(csvData) {
 
   // Clean csv data and store into global snowData variable
   snowData = csvData
     .map(data => { return {
       year: +data['WaterYear'],
-      depth: +data['Snow Depth (cm)'],
+      depth: +data['Snow_depth'],
       stationName: data['StationName']
     }});
 
