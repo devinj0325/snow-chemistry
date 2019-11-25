@@ -1,10 +1,11 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.automap import automap_base
+#from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
-from flask import Flask, jsonify
 import pandas as pd
 
 #############
@@ -15,28 +16,36 @@ app = Flask(__name__)
 ################
 # Database Setup
 ################
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://postgres:postgres@localhost:5432/snow_chemistry"
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:postgres@localhost:5432/snow_chemistry'
 db = SQLAlchemy(app)
 
 # reflect an existing database into a new model
-Base = automap_base()
+Base = declarative_base()
 # reflect the tables
-Base.prepare(db.engine, reflect=True)
+#Base.prepare(db.engine, reflect=True)
 
-print(dir(Base.classes))
+#print(dir(Base.classes))
 
 # Save reference to the table
-test = Base.classes.test
-stations = Base.classes.stations
-snowData = Base.classes.snow_data
+# test = Base.classes.test
+#stations = Base.classes.stations
+#snowData = Base.classes.snow_data
+class User(Base):
+      __tablename__ = 'users'
 
+      id = Column(Integer, primary_key=True)
+      StationName = Column(Integer)
+      Latitude = Column(Integer)
+      Longitude = Column(Integer)
+      Elevation = Column(Integer)
+      
 ##############
 # Flask Routes
 ##############
 @app.route("/")
 
 def index():
-  render_template("templates/index.html")
+  render_template("index.html")
 
 @app.route("/snow")
 def snow_chemistry():
