@@ -1,7 +1,7 @@
 CREATE DATABASE snow_chemistry;
 
 	CREATE TABLE snow_data 
-	(id SERIAL PRIMARY KEY,
+	(id SERIAL PRIMARY KEY NOT NULL,
 	 StationName VARCHAR,
 	 WaterYear INT,
 	 pH FLOAT, 
@@ -20,7 +20,7 @@ CREATE DATABASE snow_chemistry;
 	;
 	
 	CREATE TABLE stations (
-	id SERIAL PRIMARY KEY,
+	id SERIAL PRIMARY KEY NOT NULL,
 	StationName VARCHAR,
 	Latitude FLOAT,
 	Longitude FLOAT,
