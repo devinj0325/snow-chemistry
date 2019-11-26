@@ -1,9 +1,6 @@
 from flask import Flask, request, render_template, jsonify
 import sqlalchemy
 from flask_sqlalchemy import SQLAlchemy
-#from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Float, String
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 import pandas as pd
@@ -16,107 +13,99 @@ app = Flask(__name__)
 ################
 # Database Setup
 ################
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:postgres:postgres@localhost:5432/snow_chemistry'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql://postgres:postgres@localhost:5432/snow_chemistry'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 db = SQLAlchemy(app)
-# reflect an existing database into a new model
-Base = declarative_base()
-# reflect the tables
-#Base.prepare(db.engine, reflect=True)
 
-#print(dir(Base.classes))
+class Station(db.Model):
+    __tablename__ = 'stations'
 
-# Save reference to the table
-# test = Base.classes.test
-#stations = Base.classes.stations
-#snow_data = Base.classes.snow_data
-class Station(Base):
-      __tablename__ = 'stations'
+    id = db.Column(db.Integer, primary_key=True)
+    StationName = db.Column(db.String)
+    Latitude = db.Column(db.Float)
+    Longitude = db.Column(db.Float)
+    Elevation = db.Column(db.Float)
 
-      id = Column(Float, primary_key=True)
-      StationName = Column(String)
-      Latitude = Column(Float)
-      Longitude = Column(Float)
-      Elevation = Column(Float)
+    def __repr__(self):
+        return '<Station %r>' % self.id
+    
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'StationName': self.StationName,
+            'Latitude': self.Latitude,
+            'Longitude': self.Longitude,
+            'Elevation': self.Elevation
+        }
 
-class snow_data(Base):
-      __tablename__ = 'snow_data'
+class SnowData(db.Model):
+    __tablename__ = 'snow_data'
 
-      id = Column(Float, primary_key=True)
-      StationName = Column(String)
-      WaterYear = Column(Float)
-      pH = Column(Float)
-      Hydrogen = Column(String)
-      Calcium = Column(String)
-      Magnesium = Column(String)
-      Sodium = Column(String)
-      Potassium = Column(String)
-      Ammonium = Column(String)
-      Chloride = Column(String)
-      Sulfate = Column(String)
-      Nitrate = Column(String)
-      Dissolved_organic_carbon = Column(String)
-      Snow_depth = Column(Float) 
+    id = db.Column(db.Integer, primary_key=True)
+    StationName = db.Column(db.String)
+    WaterYear = db.Column(db.Float)
+    pH = db.Column(db.Float)
+    Hydrogen = db.Column(db.String)
+    Calcium = db.Column(db.String)
+    Magnesium = db.Column(db.String)
+    Sodium = db.Column(db.String)
+    Potassium = db.Column(db.String)
+    Ammonium = db.Column(db.String)
+    Chloride = db.Column(db.String)
+    Sulfate = db.Column(db.String)
+    Nitrate = db.Column(db.String)
+    Dissolved_organic_carbon = db.Column(db.String)
+    Snow_depth = db.Column(db.Float) 
+
+    def __repr__(self):
+        return '<SnowData %r>' % self.id
+    
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'StationName': self.StationName,
+            'WaterYear': self.WaterYear,
+            'pH': self.pH,
+            'Hydrogen': self.Hydrogen,
+            'Calcium': self.Calcium,
+            'Magnesium': self.Magnesium,
+            'Sodium': self.Sodium,
+            'Potassium': self.Potassium,
+            'Ammonium': self.Ammonium,
+            'Chloride': self.Chloride,
+            'Sulfate': self.Sulfate,
+            'Nitrate': self.Nitrate,
+            'Dissolved_organic_carbon': self.Dissolved_organic_carbon,
+            'Snow_depth': self.Snow_depth
+        }
+    
 ##############
 # Flask Routes
 ##############
 @app.route("/")
 
 def index():
-  return render_template("templates/index.html")
-
-
-  
+    return render_template("index.html")
+ 
 @app.route("/snow")
 def snow_chemistry():
+    rows = SnowData.query.all()
+    print(rows)
 
-    # Use Pandas to perform the sql query
-    stmt = db.session.query(snow_data).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
-
-    # Return a list of the column names (sample names)
-    return jsonify(list(df.columns)[1:])
-
-@app.route("/snowDepth")
-def sample_metadata(sample):
-    """Return the MetaData for a given sample."""
-    sel = [
-        snow_data.StationName,
-        snow_data.WaterYear,
-        snow_data.Snow_depth,
-    ]
-    results = db.session.query(*sel).filter(snow_data.sample == sample).all()
-    print(results)
-
+    # Return a list of the db.Column names (sample names)
+    return jsonify([row.as_dict() for row in rows])
 
 @app.route("/stations")
 def stations():
 
-    # Use Pandas to perform the sql query
-    stmt = db.session.query(stations).statement
-    df = pd.read_sql_query(stmt, db.session.bind)
+    locations = Station.query.all()
+    print(locations)
 
-    # Return a list of the column names (sample names)
-    return jsonify(list(df.columns)[1:])
-
-@app.route("/stationInfo")
-def metadata(location):
-    """Return the MetaData for a given sample."""
-    sel = [
-        stations.StationName,
-        stations.Latitude,
-        stations.Longitude,
-        stations.Elevation
-    ]
-    info = db.session.query(*sel).filter(stations.location == location).all()
-    print(info)
-
-
-
-
+    # Return a list of the db.Column names (sample names)
+    return jsonify([location.as_dict() for location in locations])
 
 if __name__ == "__main__":
-  app.run()
+  app.run(debug=True)
