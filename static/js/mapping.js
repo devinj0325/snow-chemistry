@@ -5,6 +5,13 @@ const myMap = L.map("map", {
 });
 
 
+
+// function collectLocations (locales) {
+//   d3.json(`/stations')
+
+// }
+
+
 L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
   attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
   maxZoom: 18,
@@ -42,3 +49,27 @@ for (var i = 0; i < cities.length; i++) {
     .bindPopup("<h2>" + city.name + "</h2> <hr> <h3>Elevation: " + city.elevation + "</h3>")
     .addTo(myMap);
 }
+
+// Grab the data with d3
+d3.json(`/stations`, function(cities) {
+
+  // Loop through data
+  for (var i = 0; i < cities.length; i++) {
+
+    // Set the data location property to a variable
+    var cities = cities[i].location;
+
+    // Check for location property
+    if (location) {
+
+      // Add a new marker to the cluster group and bind a pop-up
+      markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
+        .bindPopup(response[i].descriptor));
+    }
+
+  }
+
+  // Add our marker cluster layer to the map
+  myMap.addLayer(markers);
+
+});
