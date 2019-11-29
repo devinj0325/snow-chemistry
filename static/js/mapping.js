@@ -6,10 +6,10 @@ const myMap = L.map("map", {
 
 
 
-// function collectLocations (locales) {
-//   d3.json(`/stations')
+function collectLocations (locales) {
+  d3.json(`/stations`)
 
-// }
+}
 
 
 L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
