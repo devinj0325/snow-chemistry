@@ -1,76 +1,62 @@
-//Create map
-const myMap = L.map("plot", {
-  center: [41.5516759, -111.3655038],
-  zoom: 5
-});
+//Function to create the map 
+function createMap(snowStations) {
 
-L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
-  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
-  maxZoom: 18,
-  id: "mapbox.satellite",
-  accessToken: API_KEY
-}).addTo(myMap);
+  // Create the tile layer for the background of the map
+  let satmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+    attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+    maxZoom: 18,
+    id: "mapbox.satellite",
+    accessToken: API_KEY
+  });
 
-// // An array containing each city's name, location, and elevation
-// var cities = [{
-//   location: [48.51805556, -114.02],
-//   name: "APGAR LOOKOUT MT",
-//   elevation: "5179"
-// },
-// {
-//   location: [36.57277778, -105.4452778],
-//   name: "TAOS SKI VALLEY NM",
-//   elevation: "10890"
-// },
+  // Create a baseMaps object to hold the tile layer
+  let baseMaps = {
+    "Satellite Map": satmap
+  };
 
-// {
-//   location: [44.3033333, -115.2344444],
-//   name: "BANNER SUMMIT ID",
-//   elevation: "7042"
-// },
-// {
-//   location: [48.50805556, -114.345],
-//   name: "BIG MOUNTAIN MT",
-//   elevation: "6426"
-// }
-// ]
-// // Loop through the cities array and create one marker for each city, bind a popup containing its name and elevation add it to the map
-// for (var i = 0; i < cities.length; i++) {
-//   var city = cities[i];
-//   L.marker(city.location)
-//     .bindPopup("<h2>" + city.name + "</h2> <hr> <h3>Elevation: " + city.elevation + "</h3>")
-//     .addTo(myMap);
-// }
+  // Create an overlayMaps object to hold the snowStations layer
+  let overlayMaps = {
+    "Measurement Stations": snowStations
+  };
 
-// // Grab the data with d3
-// d3.json(`/stations`, function(cities) {
+  // Create the map object with options
+  const myMap = L.map("map", {
+    center: [41.5516759, -111.3655038],
+    zoom: 5,
+    layers: [satmap, snowStations]
+  });
 
-//   // Loop through data
-//   for (var i = 0; i < cities.length; i++) {
+  // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
+  L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false
+  }).addTo(myMap);
+}
 
-//     // Set the data location property to a variable
-//     var cities = cities[i].location;
+//Collect data from flask and to create markers and popups
+function createMarkers(response) {
+  
+  console.log(response);
+  // Pull the "stations" property off of the response, rename for readability
+  let stations = response;
 
-//     // Check for location property
-//     if (location) {
+  // Initialize an array to hold station markers
+  let stationMarkers = [];
 
-//       // Add a new marker to the cluster group and bind a pop-up
-//       markers.addLayer(L.marker([location.coordinates[1], location.coordinates[0]])
-//         .bindPopup(response[i].descriptor));
-//     }
+  // Loop through the stations array
+  for (let index = 0; index < stations.length; index++) {
+    let station = stations[index];
 
-//   }
+    // For each station, create a marker and bind a popup with the station's name
+    let stationMarker = L.marker([station.Latitude, station.Longitude])
+      .bindPopup("<h3>Station: " + station.StationName + "<h3><h3>Elevation: " + station.Elevation + "<h3>");
 
-//   // Add our marker cluster layer to the map
-//   myMap.addLayer(markers);
+    // Add the marker to the stationMarkers array
+    stationMarkers.push(stationMarker);
+  };
 
-// });
+  // Create a layer group made from the station markers array, pass it into the createMap function
+  createMap(L.layerGroup(stationMarkers));
+}
 
-
-
-//Collect station data for map and pop ups
-const stationURL = "/stations";
-d3.json(stationsURL).then(function(data) {
-  console.log(data);
-
-});
+// Perform an API call to the Flask app to get station information. Call createMarkers when complete
+d3.json(`/stations`, createMarkers);
