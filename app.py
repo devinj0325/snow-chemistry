@@ -89,6 +89,7 @@ class SnowData(db.Model):
 def index():
     return template("index")
 
+# Define a route that will accept any requests with *.html path
 @app.route("/<string:page>.html")
 def template(page):
     return render_template(f"{page}.html")
