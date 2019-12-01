@@ -43,12 +43,12 @@ let renderChart = function(filteredData) {
   // Configure a scale
   // d3.extent returns an array containing the min and max values for the property specified
   var xLinearScale = d3.scaleLinear()
-    .domain(d3.extent(filteredData, data => data.year))
+    .domain(d3.extent(filteredData, data => data['WaterYear']))
     .range([0, chartWidth]);
 
     // Configure a linear scale with a range 
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(filteredData, data => data.depth)])
+    .domain([0, d3.max(filteredData, data => data['Snow_depth'])])
     .range([chartHeight, 0]);
 
   // Create two new functions passing the scales in as arguments
@@ -58,8 +58,8 @@ let renderChart = function(filteredData) {
   
   // Configure a line function which will plot the x and y coordinates using our scales
   var drawLine = d3.line()
-    .x(data => xLinearScale(data.year))
-    .y(data => yLinearScale(data.depth));
+    .x(data => xLinearScale(data['WaterYear']))
+    .y(data => yLinearScale(data['Snow_depth']));
   
     // Append an SVG path and plot its points using the line function
   // The drawLine function returns the instructions for creating the line for forceData
@@ -81,42 +81,32 @@ let renderChart = function(filteredData) {
     .call(bottomAxis);
 };
 
-// Use D3 to load data from csv
-  d3.csv('../db/data/cleanedDataV3.csv').then(function(csvData) {
+// Use D3 to pull snow depth data from flask app
+d3.json('/snow').then(function(jsonData) {
 
-  // d3.json('snow/${rows}').then(function(snowData) {
+  snowData = jsonData;
+});
 
-  // Clean csv data and store into global snowData variable
-  snowData = csvData
-    .map(data => { return {
-      year: +data['WaterYear'],
-      depth: +data['Snow_depth'],
-      stationName: data['StationName']
-    }});
+// Use D3 tp pull stations from flask app
 
-  // Map all stations into an array and filter all non-uniques
-  let stations = snowData
-    .map(data => data.stationName)
-    .filter((element, index, array) => array.indexOf(element) === index);
+d3.json('/stations').then(function(stationData) {
 
   // Select element in html
   let selStation = d3.select('#selStation');
 
   // Populate options for each station
-  stations.forEach(stationName => {
+  stationData.forEach(station => {
     selStation.append('option')
-      .attr('value', stationName)
-      .text(stationName);
+      .attr('value', station['StationName'])
+      .text(station['StationName']);
   });
 
-  // Select the first station in the set when updating the chart
-  updateStation(stations[0]);
 });
 
 // Function for updating chart based on station name
 let updateStation = function(stationName) {
   let filteredData = snowData
-    .filter(data => data.stationName == stationName);
+    .filter(data => data['StationName'] === stationName);
   
   // Renders chart
   renderChart(filteredData);

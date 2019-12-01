@@ -86,14 +86,16 @@ class SnowData(db.Model):
 # Flask Routes
 ##############
 @app.route("/")
-
 def index():
-    return render_template("index.html")
+    return template("index")
+
+@app.route("/<string:page>.html")
+def template(page):
+    return render_template(f"{page}.html")
  
 @app.route("/snow")
 def snow_chemistry():
     rows = SnowData.query.all()
-    print(rows)
 
     # Return a list of the db.Column names (sample names)
     return jsonify([row.as_dict() for row in rows])
@@ -102,7 +104,6 @@ def snow_chemistry():
 def stations():
 
     locations = Station.query.all()
-    print(locations)
 
     # Return a list of the db.Column names (sample names)
     return jsonify([location.as_dict() for location in locations])
