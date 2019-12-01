@@ -82,7 +82,9 @@ let renderChart = function(filteredData) {
 };
 
 // Use D3 to load data from csv
-d3.csv('../db/data/cleanedDataV3.csv').then(function(csvData) {
+  d3.csv('../db/data/cleanedDataV3.csv').then(function(csvData) {
+
+  // d3.json('snow/${rows}').then(function(snowData) {
 
   // Clean csv data and store into global snowData variable
   snowData = csvData

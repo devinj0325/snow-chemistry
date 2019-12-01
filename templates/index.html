@@ -147,14 +147,20 @@
           </div>
   <div id="plot"></div>
   
-  <select id="selStation" onchange="updateStation(this.value)">
-    <option>Filter Options</option>
-  </select>
-  
-  <svg id="snowDepthChart"></svg>
+  <div>
+    <select id="selStation" onchange="updateStation(this.value)">
+      <option>Filter Options</option>
+    </select>
+  </div>
+
+  <div>
+    <svg id="snowDepthChart"></svg>
+    <!-- Add chemical chart here! -->
+  </div>
 
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="../static/js/plots.js"></script>
+  <script src="../static/js/chemchart.js"></script>
   <script src="../static/js/config.js"></script>
   <script src="../static/js/mapping.js"></script>
     
