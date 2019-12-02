@@ -47,6 +47,14 @@
       font-size: 125%;
     }
 
+    #stationMeasurements label {
+      font-size: .9em;
+      padding-right: 10px;
+    }
+
+    #stationMeasurements label::after {
+      content: ':';
+    }
   </style>
 
 </head>
@@ -148,19 +156,41 @@
   <div id="plot"></div>
   
   <div>
+    Select a station:&nbsp;&nbsp;
     <select id="selStation" onchange="updateStation(this.value)">
       <option>Filter Options</option>
     </select>
   </div>
 
   <div>
-    <svg id="snowDepthChart"></svg>
+    <div class="column" style="width: 1000px; height: 600px; padding-top: 10px">
+      <h3>Snow Depth by Year:</h3>
+      <svg id="snowDepthChart"></svg>
+    </div>
     <!-- Add chemical chart here! -->
+    <div id="stationMeasurements" class="column" style="margin-left: 100px; background-color: aliceblue; width: 400px; height: 600px; padding-top: 10px;">
+      <h3>Station Measurements</h3>
+      <label>By Year</label>
+        <select id="selYear" onchange="updateStationYearMeasurements(this.value)">
+          <option>Year</option>
+        </select>
+      <br /><br />
+      <label>Ammonium</label><span id="Ammonium"></span><br />
+      <label>Calcium</label><span id="Calcium"></span><br />
+      <label>Chloride</label><span id="Chloride"></span><br />
+      <label>Dissolved Organic Carbon</label><span id="Dissolved_organic_carbon"></span><br />
+      <label>Hydrogen</label><span id="Hydrogen"></span><br />
+      <label>Magnesium</label><span id="Magnesium"></span><br />
+      <label>Nitrate</label><span id="Nitrate"></span><br />
+      <label>Potassium</label><span id="Potassium"></span><br />
+      <label>Sodium</label><span id="Sodium"></span><br />
+      <label>Sulfate</label><span id="Sulfate"></span><br />
+      <label>pH</label><span id="pH"></span><br />
+    </div>
   </div>
 
   <script src="https://d3js.org/d3.v5.min.js"></script>
   <script src="static/js/plots.js"></script>
-  <script src="static/js/chemchart.js"></script>
   <script src="static/js/config.js"></script>
   <script src="static/js/mapping.js"></script>
     

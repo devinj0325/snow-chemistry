@@ -88,6 +88,38 @@ let updateStation = function(stationName) {
   
   // Renders chart
   renderChart(filteredData);
+
+  // Get all the WaterYears for the selected station, sorted
+  let stationYears = filteredData.map(station => station['WaterYear']).sort();
+  
+  // Select the selYear element in html
+  let selStation = d3.select('#selYear');
+
+  selStation.selectAll("*").remove();
+
+  // Populate options for each station
+  stationYears.forEach(year => {
+    selStation.append('option')
+      .attr('value', year)
+      .text(year);
+    });
+  
+  updateStationYearMeasurements(stationYears[0]);
+};
+
+let updateStationYearMeasurements = function(year) {
+  let selectedStation = d3.select('#selStation').node().value;
+  
+  snowDataByStationYear = snowData
+  .filter(data => data['StationName'] === selectedStation)
+  .filter(data => data['WaterYear'] == year)[0];
+  
+  measurementSpans = document.getElementById('stationMeasurements')
+    .getElementsByTagName('span');
+
+  for (let i = 0; i < measurementSpans.length; i++) {
+    measurementSpans[i].textContent = snowDataByStationYear[measurementSpans[i].id];
+  }
 };
 
 // Use D3 to pull snow depth data from flask app
