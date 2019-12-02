@@ -42,7 +42,7 @@ function createMarkers(stations) {
   // Initialize an array to hold station markers
   let stationMarkers = stations.map(station => {
     return L.marker([station.Latitude, station.Longitude])
-      .bindPopup("<h3>Station: " + station.StationName + "<h3><h3>Elevation: " + station.Elevation + "<h3>")
+      .bindPopup("<h4>Station: " + station.StationName + "</h4><h5>Elevation: " + station.Elevation + "</h5>")
   });
 
   console.log(stationMarkers);
@@ -53,15 +53,3 @@ function createMarkers(stations) {
 
 // Perform an API call to the Flask app to get station information. Call createMarkers when complete
 d3.json(`/stations`, createMarkers);
-
-/*
-var map = L.map('map').setView([51.505, -0.09], 13);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-L.marker([51.5, -0.09]).addTo(map)
-    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-    .openPopup();
-*/
