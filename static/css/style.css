@@ -6,11 +6,32 @@
   html,
   body {
     height: 100%;
-    padding: 20px;
+    padding-top: 20px;
+    padding-right: 80px;
+    padding-bottom: 50px;
+    padding-left: 80px;
     margin: 0;
     background:rgb(255, 255, 255);
     color: black;
   }
+/* unvisited link */
+a:link {
+  color: orange;
+}
+/* visited link */
+a:visited {
+  color: green;
+}
+/* mouse over link */
+a:hover {
+  color: black;
+  background-color: white;
+  text-decoration: none;
+}
+/* selected link */
+a:active {
+  color: blue;
+}
   /* The wrapper contains all of the page's content besides the footer, which is pushed to the bottom of the page */
   /*.wrapper {
     position: relative;
