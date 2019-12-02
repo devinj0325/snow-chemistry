@@ -9,6 +9,8 @@ function createMap(snowStations) {
     accessToken: API_KEY
   });
 
+  console.log(satmap);
+
   // Create a baseMaps object to hold the tile layer
   let baseMaps = {
     "Satellite Map": satmap
@@ -33,26 +35,17 @@ function createMap(snowStations) {
 }
 
 //Collect data from flask and to create markers and popups
-function createMarkers(response) {
+function createMarkers(stations) {
   
-  console.log(response);
-  // Pull the "stations" property off of the response, rename for readability
-  let stations = response;
+  console.log(stations);
 
   // Initialize an array to hold station markers
-  let stationMarkers = [];
+  let stationMarkers = stations.map(station => {
+    return L.marker([station.Latitude, station.Longitude])
+      .bindPopup("<h3>Station: " + station.StationName + "<h3><h3>Elevation: " + station.Elevation + "<h3>")
+  });
 
-  // Loop through the stations array
-  for (let index = 0; index < stations.length; index++) {
-    let station = stations[index];
-
-    // For each station, create a marker and bind a popup with the station's name
-    let stationMarker = L.marker([station.Latitude, station.Longitude])
-      .bindPopup("<h3>Station: " + station.StationName + "<h3><h3>Elevation: " + station.Elevation + "<h3>");
-
-    // Add the marker to the stationMarkers array
-    stationMarkers.push(stationMarker);
-  };
+  console.log(stationMarkers);
 
   // Create a layer group made from the station markers array, pass it into the createMap function
   createMap(L.layerGroup(stationMarkers));
@@ -60,3 +53,15 @@ function createMarkers(response) {
 
 // Perform an API call to the Flask app to get station information. Call createMarkers when complete
 d3.json(`/stations`, createMarkers);
+
+/*
+var map = L.map('map').setView([51.505, -0.09], 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+L.marker([51.5, -0.09]).addTo(map)
+    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+    .openPopup();
+*/
